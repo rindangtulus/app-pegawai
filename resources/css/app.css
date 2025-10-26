@@ -9,3 +9,8 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* blue button with red border */
+.button-tata {
+ @apply bg-blue-500 text-white border-2 border-red-500 px-4 py-2 rounded;
+}
