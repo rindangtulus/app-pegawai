@@ -1,63 +1,39 @@
 @extends('master')
-@section('title', 'Daftar Pegawai')
+@section('title', 'Daftar Absensi')
 @section('content')
 
-<div class=" container mt-5 mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 py-6">
-    <h1 class="text-2xl font-bold mb-4">Daftar Pegawai Rumah Sakit Infor</h1>
+<div class="container mt-5 mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 py-6">
+
+    <h1 class="text-2xl font-bold mb-4">Daftar Absensi</h1>
     <div class="flex justify-end">
 
-        <a href="/employees/create" class="inline-flex items-center gap-x-2 rounded-lg bg-emerald-800 px-4 py-2 font-semibold text-white transition hover:bg-emerald-900">
+        <a href="{{ route('attendances.create') }}" class="inline-flex items-center gap-x-2 rounded-lg bg-emerald-800 px-4 py-2 font-semibold text-white transition hover:bg-emerald-900">
 
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
                 <path d="M10.75 4.75a.75.75 0 0 0-1.5 0v4.5h-4.5a.75.75 0 0 0 0 1.5h4.5v4.5a.75.75 0 0 0 1.5 0v-4.5h4.5a.75.75 0 0 0 0-1.5h-4.5v-4.5Z" />
             </svg>
 
-            <span>Tambah Pegawai</span>
+            <span>Tambah Absensi</span>
         </a>
 
     </div>
-
-    <div class=" flex justify-end my-4">
-        <form action="{{ route('employees.index') }}" method="GET">
-            <div class="flex bg-white items-center border border-gray-300 rounded-lg overflow-hidden shadow-sm max-w-sm">
-                <input
-                    type="text"
-                    name="search"
-                    placeholder="Cari nama atau email..."
-                    class="px-4 py-2 border-0 focus:ring-0 flex-grow"
-                    value="{{ request('search') }}">
-                <button
-                    type="submit"
-                    class="bg-emerald-700 text-white px-4 py-2 hover:bg-emerald-800 transition duration-150">
-                    Cari
-                </button>
-            </div>
-        </form>
-    </div>
-
     <table class="min-w-full divide-y divide-gray-200 shadow-sm rounded-lg overflow-hidden my-5">
         <thead class="bg-gray-50">
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Nama Lengkap
+                    Nama Karyawan
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
+                    Tanggal
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Nomor Telepon
+                    Waktu Masuk
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tanggal Lahir
+                    Waktu Keluar
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Alamat
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tanggal Masuk
-                </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
+                    Status Absensi
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Aksi
@@ -65,42 +41,36 @@
             </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-            @forelse($employees as $employee)
+            @forelse($attendances as $attendance)
             <tr>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {{ $employee->nama_lengkap }}
+                    {{ $attendance->employee->nama_lengkap }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {{ $employee->email }}
+                    {{ $attendance->tanggal }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {{ $employee->nomor_telepon }}
+                    {{ $attendance->waktu_masuk ?? '-' }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {{ $employee->tanggal_lahir }}
-                </td>
-                <td class="px-6 py-4 text-sm text-gray-900">
-                    {{ $employee->alamat }}
+                    {{ $attendance->waktu_keluar ?? '-' }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {{ $employee->tanggal_masuk }}
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {{ $employee->status }}
+                    {{ ucfirst($attendance->status_absensi) }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div class="flex items-center gap-3">
-                        <a href="{{ route('employees.show', $employee->id) }}" class="text-indigo-600 hover:text-indigo-900">
+                        <a href="{{ route('attendances.show', $attendance->id) }}" class="text-indigo-600 hover:text-indigo-900">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Zm3.75 11.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
                             </svg>
                         </a>
-                        <a href="{{ route('employees.edit', $employee->id) }}" class="text-emerald-600 hover:text-emerald-900">
+                        <a href="{{ route('attendances.edit', $attendance->id) }}" class="text-emerald-600 hover:text-emerald-900">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                             </svg>
                         </a>
-                        <form action="{{ route('employees.destroy', $employee->id) }}" method="POST" class="inline">
+                        <form action="{{ route('attendances.destroy', $attendance->id) }}" method="POST" class="inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" onclick="return confirm('Yakin ingin menghapus?')" class="text-red-600 hover:text-red-900">
@@ -114,7 +84,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
+                <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
                     Belum ada data.
                 </td>
             </tr>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\Department;
+use App\Models\Position;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -10,19 +12,33 @@ class EmployeeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $employees = Employee::latest()->paginate(5);
-        $nilaisementara = 100;
-        return view('employees.index', compact('employees','nilaisementara'));
-    }
+        $search = $request->input('search');
 
+        $query = Employee::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_lengkap', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+
+        $employees = $query->latest()->paginate(5)
+            ->appends(request()->query());
+
+        return view('employees.index', compact('employees', 'search'));
+    }
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('employees.create');    
+        $departments = Department::all();
+        $positions = Position::all();
+        return view('employees.create', compact('departments', 'positions'));
     }
 
     /**
@@ -55,10 +71,16 @@ class EmployeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Employee $employee)
     {
-        $employee = Employee::find($id);
-        return view('employees.edit',compact('employee'));
+        $departments = Department::all();
+        $positions = Position::all();
+
+        return view('employees.edit', [
+            'employee'    => $employee,
+            'departments' => $departments,
+            'positions'   => $positions
+        ]);
     }
 
     /**
